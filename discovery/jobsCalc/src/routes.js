@@ -4,14 +4,50 @@ const routes = express.Router();
 //antes do ejs, por padrão ejs já usa a pasta src/view
 const views = __dirname + "/views/";
 
-const profile = {
-    name: "Felipy",
-    avatar: "https://github.com/iamfelipy.png",
-    "monthly-budget": 3000,
-    "days-per-week": 5,
-    "hours-per-day": 8,
-    "vacation-per-year": 4,
-    "value-hour": 75
+const Profile = {
+    data: {
+        name: "Felipy",
+        avatar: "https://github.com/iamfelipy.png",
+        "monthly-budget": 3000,
+        "days-per-week": 5,
+        "hours-per-day": 8,
+        "vacation-per-year": 4,
+        "value-hour": 75
+    },
+    controllers: {
+        index(req, res) { 
+            return res.render(views+"profile", {profile: Profile.data});
+        }, 
+        update(req, res){
+            
+
+            //req.body para pegar os dados
+            const data = req.body;
+
+            // definir quantas semanas tem num ano: 52
+            const weeksPerYear = 52;
+
+            //remover as semanas de férias do ano, para pegar quantas semanas tem em 1 mês
+            const weeksPerMonth = (weeksPerYear - data["vacation-per-year"]) / 12;
+
+            //total de horas trabalhadas na semana
+            const weekTotalHours = data["hours-per-day"] * data["days-per-week"];
+
+            //horas trabalhar no mês
+            const monthlyTotalHours = weekTotalHours * weeksPerMonth;
+
+            // qual será o valor da minha hora?
+            const valueHour = data["monthly-budget"] / monthlyTotalHours;
+
+            Profile.data = {
+                ...Profile.data,
+                ...req.body,
+                "value-hour": valueHour
+            }
+            
+            return res.redirect("/profile");
+        }
+    }
 }
 
 const Job = {
@@ -38,7 +74,7 @@ const Job = {
                 const remaining = Job.services.remainingDays(job);
                 const status = remaining <= 0 ? "done" : "progress";
 
-                let budget = job["total-hours"]*profile["value-hour"];
+                let budget = job["total-hours"]*Profile.data["value-hour"];
                 budget = budget.toLocaleString("pt-br", {minimumFractionDigits: 2 ,style: "currency", currency: "BRL"})
 
                 return {
@@ -49,7 +85,25 @@ const Job = {
                 };
             });
         
-            return res.render(views+"index", {jobs: [...updatedJobs]})
+            return res.render(views+"index", {jobs: [...updatedJobs]});
+        },
+        create(req, res) {
+            return res.render(views+"job")
+        },
+        save(req, res) {
+            // req.body = { name: 'asad', 'daily-hours': '3.1', 'total-hours': '3' }
+            //gera um id unico
+            const lastID = Job.data[Job.data.length-1]?.id || 1;
+        
+            Job.data.push({
+                id: lastID + 1,
+                name: req.body.name,
+                "daily-hours": req.body["daily-hours"],
+                "total-hours": req.body["total-hours"],
+                created_at: Date.now()
+            });
+        
+            return res.redirect('/');
         }
     },
     services: {
@@ -88,24 +142,13 @@ const Job = {
 //tambem não preciso dizer o tipo de extensao para o ejs ele já sabe que a saida é html
 // routes.get('/', (req, res) => res.sendFile(basePath+"/index.html")); o antigo,antes do ejs
 routes.get('/', Job.controllers.index);
-routes.get('/job', (req, res) => res.render(views+"job"));
-routes.post('/job',(req, res) => {
-    // req.body = { name: 'asad', 'daily-hours': '3.1', 'total-hours': '3' }
-    //gera um id unico
-    const lastID = Job.data[Job.data.length-1]?.id || 1;
 
-    Job.data.push({
-        id: lastID + 1,
-        name: req.body.name,
-        "daily-hours": req.body["daily-hours"],
-        "total-hours": req.body["total-hours"],
-        created_at: Date.now()
-    });
-
-    return res.redirect('/');
-});
+routes.get('/job', Job.controllers.create);
+routes.post('/job', Job.controllers.save);
 routes.get('/job/edit', (req, res) => res.render(views+"job-edit"));
-routes.get('/profile', (req, res) => res.render(views+"profile", {profile}));
+
+routes.get('/profile', Profile.controllers.index);
+routes.post('/profile', Profile.controllers.update);
 
 
 module.exports = routes;
