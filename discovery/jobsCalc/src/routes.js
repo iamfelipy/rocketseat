@@ -19,7 +19,6 @@ const Profile = {
             return res.render(views+"profile", {profile: Profile.data});
         }, 
         update(req, res){
-            
 
             //req.body para pegar os dados
             const data = req.body;
@@ -74,18 +73,15 @@ const Job = {
                 const remaining = Job.services.remainingDays(job);
                 const status = remaining <= 0 ? "done" : "progress";
 
-                let budget = job["total-hours"]*Profile.data["value-hour"];
-                budget = budget.toLocaleString("pt-br", {minimumFractionDigits: 2 ,style: "currency", currency: "BRL"})
-
                 return {
                     ...job,
                     remaining,
                     status,
-                    budget
+                    budget: Job.services.calculateBudget({...job}, Profile.data["value-hour"])
                 };
             });
         
-            return res.render(views+"index", {jobs: [...updatedJobs]});
+            return res.render(views+"index", {jobs: [...updatedJobs], profile: Profile.data["value-hour"]});
         },
         create(req, res) {
             return res.render(views+"job")
@@ -100,10 +96,59 @@ const Job = {
                 name: req.body.name,
                 "daily-hours": req.body["daily-hours"],
                 "total-hours": req.body["total-hours"],
+                budget: Job.services.calculateBudget({"total-hours":req.body["total-hours"]}),
                 created_at: Date.now()
             });
         
             return res.redirect('/');
+        },
+        show(req, res) {
+            
+            //pegar id
+            const jobId = req.params.id;
+            //buscar o id da rota
+            const job = Job.data.find(job=>Number(job.id) === Number(jobId));
+
+            if(!job){
+                return res.send("Job not found!");
+            }
+
+            job.budget = Job.services.calculateBudget({...job}, Profile.data["value-hour"]);
+
+            //enviar as informações para o render
+            //inserir ejs no edit-job cpara tornar os dados dinamicos
+            
+            return res.render(views+"job-edit", {job});
+        },
+        update(req, res){ 
+            
+            //descobrir qual id está sendo editado
+            const jobId = req.params.id;
+            
+            //achar o job atual pelo id
+            const job = Job.data.find(job=>job.id == jobId);
+            if(!job){
+                return res.send("Job not found!");
+            }
+            
+            //pegar os valores do novo job
+            const updatedJob = {
+                ...job,
+                name: req.body.name,
+                "total-hours": req.body["total-hours"],
+                "daily-hours": req.body["daily-hours"]
+            };
+            
+            //alterar os valores do id
+            Job.data = Job.data.map(job=>{
+                if(Number(job.id) === Number(jobId)){
+                    job = updatedJob;
+                }
+
+                return {...job};
+            });
+            //redirecionar para a mesma pagina com os valores atualizados
+            return res.redirect("/job/"+jobId);
         }
     },
     services: {
@@ -134,7 +179,8 @@ const Job = {
             const dayDiff = Math.floor(timeDiffInMs / dayInMs);
         
             return dayDiff;
-        }
+        },
+        calculateBudget: (job, valueHour) => job["total-hours"]*valueHour
     }
 };
 
@@ -145,7 +191,8 @@ routes.get('/', Job.controllers.index);
 
 routes.get('/job', Job.controllers.create);
 routes.post('/job', Job.controllers.save);
-routes.get('/job/edit', (req, res) => res.render(views+"job-edit"));
+routes.get('/job/:id', Job.controllers.show);
+routes.post('/job/:id', Job.controllers.update);
 
 routes.get('/profile', Profile.controllers.index);
 routes.post('/profile', Profile.controllers.update);
