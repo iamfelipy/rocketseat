@@ -76,9 +76,9 @@
         <h1 class="sr-only">Trabalhos</h1>
 
         <div class="cards">
-          <% jobs.forEach((job)=> {%>
+          <% jobs.forEach((job, index)=> {%>
               <div class="card <%=job.status === "progress"?"progress":"done"%>" data-id="<%=job.id%>">
-                <div class="id column">1</div>
+                <div class="id column"><%= index+1 %> </div>
                 <div class="name column">
                   <%=job.name%>
                 </div>
@@ -125,7 +125,7 @@
         <h3>Excluir Job</h3>
         <p>Quer mesmo excluir esse job? <br/>
         Ele será apagado para sempre.  
-        <p>
+        </p>
         <footer>
           <a 
             class="button gray" 
