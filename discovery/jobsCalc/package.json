@@ -15,5 +15,9 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.14"
-  }
+  },
+  "os": [
+    "darwin",
+    "win32"
+  ]
 }
