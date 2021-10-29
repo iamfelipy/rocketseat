@@ -195,7 +195,6 @@ const Job = {
 //tambem não preciso dizer o tipo de extensao para o ejs ele já sabe que a saida é html
 // routes.get('/', (req, res) => res.sendFile(basePath+"/index.html")); o antigo,antes do ejs
 routes.get('/', Job.controllers.index);
-
 routes.get('/job', Job.controllers.create);
 routes.post('/job', Job.controllers.save);
 routes.get('/job/:id', Job.controllers.show);
