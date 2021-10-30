@@ -1,9 +1,6 @@
 const express = require("express");
 const routes = express.Router();
 
-//antes do ejs, por padrão ejs já usa a pasta src/view
-const views = __dirname + "/views/";
-
 const Profile = {
     data: {
         name: "Felipy",
@@ -16,7 +13,7 @@ const Profile = {
     },
     controllers: {
         index(req, res) { 
-            return res.render(views+"profile", {profile: Profile.data});
+            return res.render("profile", {profile: Profile.data});
         }, 
         update(req, res){
 
@@ -81,10 +78,10 @@ const Job = {
                 };
             });
         
-            return res.render(views+"index", {jobs: [...updatedJobs], profile: Profile.data["value-hour"]});
+            return res.render("index", {jobs: [...updatedJobs], profile: Profile.data["value-hour"]});
         },
         create(req, res) {
-            return res.render(views+"job")
+            return res.render("job")
         },
         save(req, res) {
             // req.body = { name: 'asad', 'daily-hours': '3.1', 'total-hours': '3' }
@@ -118,7 +115,7 @@ const Job = {
             //enviar as informações para o render
             //inserir ejs no edit-job cpara tornar os dados dinamicos
             
-            return res.render(views+"job-edit", {job});
+            return res.render("job-edit", {job});
         },
         update(req, res){ 
             
