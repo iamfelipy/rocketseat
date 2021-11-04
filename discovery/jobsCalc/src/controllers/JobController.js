@@ -13,14 +13,16 @@ module.exports = {
         //gera um id unico
         const lastID = jobs[jobs.length-1]?.id || 1;
 
-        jobs.push({
+        const newJob = {
             id: lastID + 1,
             name: req.body.name,
             "daily-hours": req.body["daily-hours"],
             "total-hours": req.body["total-hours"],
             budget: JobUtils.calculateBudget({"total-hours":req.body["total-hours"]}, profile["value-hour"]),
             created_at: Date.now()
-        });
+        };
+
+        Job.create(newJob);
     
         return res.redirect('/');
     },
