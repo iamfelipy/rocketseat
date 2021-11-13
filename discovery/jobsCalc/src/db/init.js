@@ -38,7 +38,8 @@ const initDb = {
                 monthly_budget, 
                 days_per_week, 
                 hours_per_day, 
-                vacation_per_year
+                vacation_per_year,
+                created_at
             )
             VALUES (
                 "Felipy", 
@@ -46,7 +47,8 @@ const initDb = {
                 3000,
                 5,
                 8,
-                4
+                4,
+                1617514376018
             )
         `);
         

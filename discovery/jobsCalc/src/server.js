@@ -2,7 +2,6 @@ const express = require("express");
 const server = express();
 const routes = require("./routes");
 const path = require("path");
-const config = require("./db/config");
 
 //set view engine
 //antes do ejs, por padrão ejs já usa a pasta src/view
