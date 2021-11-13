@@ -5,20 +5,14 @@ const Profile = require("../model/Profile");
 module.exports = {
     create(req, res) {
         return res.render("job")
-    },
-    save(req, res) {
-        // req.body = { name: 'asad', 'daily-hours': '3.1', 'total-hours': '3' }
-        const jobs = Job.get();
-        const profile = Profile.get();
-        //gera um id unico
-        const lastID = jobs[jobs.length-1]?.id || 1;
+    }, 
+    //ok
+    async save(req, res) {
 
         const newJob = {
-            id: lastID + 1,
             name: req.body.name,
             "daily-hours": req.body["daily-hours"],
             "total-hours": req.body["total-hours"],
-            budget: JobUtils.calculateBudget({"total-hours":req.body["total-hours"]}, profile["value-hour"]),
             created_at: Date.now()
         };
 
@@ -26,13 +20,14 @@ module.exports = {
     
         return res.redirect('/');
     },
-    show(req, res) {
+    async show(req, res) {
         
-        const jobs = Job.get();
-        const profile = Profile.get();
+        const jobs = await Job.get();
+        const profile = await Profile.get();
 
         //pegar id
         const jobId = req.params.id;
+        
         //buscar o id da rota
         const job = jobs.find(job=>Number(job.id) === Number(jobId));
 
@@ -47,44 +42,32 @@ module.exports = {
         
         return res.render("job-edit", {job});
     },
-    update(req, res){ 
-        
-        const jobs = Job.get();
-
+    async update(req, res){ 
         //descobrir qual id está sendo editado
         const jobId = req.params.id;
-        
-        //achar o job atual pelo id
-        const job = jobs.find(job=>job.id == jobId);
-        
-        if(!job){
+
+        //verifica se o id existe
+        const idValid = await (await Job.get()).find(element => element.id == jobId);
+
+        if(!idValid){
             return res.send("Job not found!");
         }
         
         //pegar os valores do novo job
         const updatedJob = {
-            ...job,
             name: req.body.name,
             "total-hours": req.body["total-hours"],
             "daily-hours": req.body["daily-hours"]
         };
         
-        //alterar os valores do id
-        const newJobs = jobs.map(job=>{
-            if(Number(job.id) === Number(jobId)){
-                job = updatedJob;
-            }
-
-            return job;
-        })
-        
-        Job.update(newJobs);
+        await Job.update(updatedJob, jobId);
         //redirecionar para a mesma pagina com os valores atualizados
         return res.redirect("/job/"+jobId);
     },
-    delete(req,res){
+    //ok
+    async delete(req,res){
         const jobId = req.params.id;
-        Job.delete(jobId);
+        await Job.delete(jobId);
         return res.redirect("/");
     }
 }
