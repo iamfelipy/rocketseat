@@ -14,16 +14,19 @@ module.exports = {
         */
         let remainingDaysInitial = (job["total-hours"]/job["daily-hours"]).toFixed();
             
+        //data de criação do job
         const createdDate = new Date(job.created_at);
-        //data de inicio do projeto + quantidade de dias a serem trabalhados
+        //dia de inicio do projeto + quantidade de dias a serem trabalhados
         const dueDay = createdDate.getDate() + Number(remainingDaysInitial);
+        //data de vencimento do job
         const dueDateInMs = createdDate.setDate(dueDay);
     
+        //data_vencimento - data_atual = diferença em milissegundos
         const timeDiffInMs = dueDateInMs - Date.now();
     
         // trnasformar milli em dias
         const dayInMs = 1000 * 60 * 60 * 24;
-        const dayDiff = Math.floor(timeDiffInMs / dayInMs);
+        let dayDiff = Math.ceil(timeDiffInMs / dayInMs);
     
         return dayDiff;
     },
