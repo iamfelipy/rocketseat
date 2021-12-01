@@ -23,7 +23,8 @@ export const GlobalStyle = createGlobalStyle`
     
     // font-size: 16px (Desktop)
     //porcentagem ajuda no zoom da acessebiilidade
-    //media vai ser util pois vou usar rem e a responsidade em dispositivos com telas diferentes
+    //media vai ser util pois vou usar rem e vai mudar automaticamente
+    //rem a responsidade em dispositivos com telas diferentes
     html{
         @media (max-width: 1080px) {
             font-size: 93.75%; // 15px
