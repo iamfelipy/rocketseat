@@ -16,7 +16,7 @@ class CreateCourseService {
     //quando eu faço deve forma o envio dos argumentos deve respeitar essa ordem
     // execute(name: string, duration: number, educator: string){
     // execute(data: Course){
-    execute({duration, educator, name}: Course){
+    execute({duration = 8, educator, name}: Course){
         console.log(name, duration, educator);
     }
 }
