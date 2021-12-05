@@ -1,4 +1,4 @@
-import { Category } from '../model/Catergory';
+import { Category } from "../model/Catergory";
 
 // DTO => Data transfer object
 interface ICreateCategoryDTO {
@@ -23,6 +23,17 @@ class CategoriesRepository {
         });
 
         this.categories.push(category);
+    }
+
+    list(): Category[] {
+        return this.categories;
+    }
+
+    findByName(name: string): Category {
+        const category = this.categories.find(
+            (category) => category.name === name
+        );
+        return category;
     }
 }
 
