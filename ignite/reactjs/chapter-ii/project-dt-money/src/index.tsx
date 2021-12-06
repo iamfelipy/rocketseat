@@ -4,8 +4,32 @@ import { createServer, Model } from 'miragejs';
 import { App } from './App';
 
 createServer({
+  //banco de dados
   models: {
-    transaction: Model,
+    transactions: Model,
+  },
+  //inicializar bancos com valores pre-definidos
+  seeds(server){
+    server.db.loadData({
+      transactions: [
+        {
+          id: 1,
+          title: 'Freelance de website',
+          type: 'deposit',
+          category: 'Dev',
+          amount: 100000,
+          createdAt: new Date('2021-12-06 07:00:00')
+        },
+        {
+          id:2,
+          title: 'z-1000',
+          type: 'withdraw',
+          category: 'Dream',
+          amount: 60000,
+          createdAt: new Date('2021-12-06 07:00:00')
+        }
+      ]
+    })
   },
   routes() {
     this.namespace = 'api';
@@ -16,15 +40,6 @@ createServer({
 
     this.post('/transactions', (schema, request) => {
       const data = JSON.parse(request.requestBody);
-
-      // {
-      //   id:1,
-      //   title: 'Transaction 1',
-      //   amount: 400,
-      //   type: 'deposit',
-      //   category: 'Food',
-      //   createdAt: new Date()
-      // }
 
       return schema.create('transaction', data);
     });
