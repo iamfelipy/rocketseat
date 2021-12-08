@@ -4,6 +4,8 @@ import {
     ICreateCategoryDTO,
 } from "./ICategoriesRepository";
 
+// existe para examplifiar a importancia de ICategoriesRepository 
+
 class PostgresCategoriesRepository implements ICategoriesRepository {
     findByName(name: string): Category {
         console.log(name);
