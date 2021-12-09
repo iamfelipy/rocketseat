@@ -6,11 +6,12 @@ import { App } from './App';
 createServer({
   //banco de dados
   models: {
-    transactions: Model,
+    transaction: Model,
   },
   //inicializar bancos com valores pre-definidos
   seeds(server){
     server.db.loadData({
+      //sempre o nome do model no plural
       transactions: [
         {
           id: 1,
@@ -32,10 +33,11 @@ createServer({
     })
   },
   routes() {
+    //tudo que for feito api/ sera lido pelo miragejs
     this.namespace = 'api';
 
     this.get('/transactions', () => {
-      return this.schema.all('transactions');
+      return this.schema.all('transaction');
     });
 
     this.post('/transactions', (schema, request) => {

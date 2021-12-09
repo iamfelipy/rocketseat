@@ -4,7 +4,15 @@ import incomeImg from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
 import { Container, TransactionTypeContainer, RadioBox } from "./styles";
 import { useState, FormEvent } from 'react';
-import { api } from '../../services/api';
+import { useTransactions } from '../../hooks/useTransactions';
+
+/**
+ * Sugestão de importação
+ * importação js em cima
+ * imagem
+ * estilo
+ * extensão que reordena importações
+ */
 
 Modal.setAppElement('#root');
 
@@ -14,25 +22,31 @@ interface NewTransactionModalProps {
 }
 
 export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
+  const { createTransaction } = useTransactions();
 
   const [title, setTitle] = useState('');
-  const [value, setValue] = useState(0);
+  const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('');
   const [type, setType] = useState('deposit');
 
   //handle pattern (executada atraves da ação de um usuáio)
-  function handleCreateNewTransaction(event: FormEvent){
+  //toda função assincrona no javascript retorna por padrão uma promisse
+  async function handleCreateNewTransaction(event: FormEvent){
     //formularios recarregam a pagina por padrão
     event.preventDefault();
 
-    const data = {
+    await createTransaction({
       title,
-      value,
+      amount,
       category,
-      type,
-    };
+      type
+    });
 
-    api.post('/transactions', data);
+    setTitle('');
+    setAmount(0);
+    setCategory('');
+    setType('deposit');
+    onRequestClose();
   }
 
   return (
@@ -60,8 +74,8 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
         <input 
           type="text" 
           placeholder="Valor"
-          value={value}
-          onChange={event => setValue(Number(event.target.value))}
+          value={amount}
+          onChange={event => setAmount(Number(event.target.value))}
         />
         <TransactionTypeContainer>
           <RadioBox 
