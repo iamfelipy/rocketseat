@@ -6,7 +6,6 @@ import { Product, Stock } from '../types';
 interface CartProviderProps {
   children: ReactNode;
 }
-
 interface UpdateProductAmount {
   productId: number;
   amount: number;
@@ -22,29 +21,87 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
-  const [cart, setCart] = useState<Product[]>(() => {
-    // const storagedCart = Buscar dados do localStorage
+  const [cart, setCart] = useState(() => {
+    const storagedCart = localStorage.getItem("@RocketShoes:cart");
 
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
+    if (storagedCart) {
+      return JSON.parse(storagedCart);
+    }
 
     return [];
   });
 
   const addProduct = async (productId: number) => {
     try {
-      // TODO
-    } catch {
-      // TODO
+      let cartArray: Product[] = [];
+      let product: Product | undefined;
+      
+      let storagedCart = localStorage.getItem("@RocketShoes:cart") || "[]";
+      
+      cartArray = JSON.parse(storagedCart);
+      
+      product = cartArray.find(product => product.id == productId);
+
+      //se não existir adiciono um produto
+      if (!product) {
+        const { data } = await api.get(`/products/${productId}`);
+        
+        if(!data) {
+          throw "Erro na adição do produto";
+        }
+        
+        cartArray.push({
+          ...data,
+          amount: 1
+        });
+      }
+
+      if (product) {
+        
+        //verifica a quantidade em estoque
+        let { data: estoqueDoProdutoNoBanco } = await api.get(`stock/${product.id}`);
+
+        const haveTheProductInStock = product.amount < estoqueDoProdutoNoBanco.amount;
+        
+        if( !haveTheProductInStock ){
+          toast.error('Quantidade solicitada fora de estoque.');
+          return;
+        }
+        
+        product.amount += 1;
+      }
+      setCart([...cartArray]);
+
+      localStorage.setItem("@RocketShoes:cart", JSON.stringify(cartArray));
+
+    } catch (e)  {
+      console.error(`${"Erro na adição do produto"}: ${e}`);
+      toast.error(`${"Erro na adição do produto"}: ${e}`);
     }
   };
 
   const removeProduct = (productId: number) => {
+    //estou trabalhando nisso aqui
     try {
-      // TODO
-    } catch {
-      // TODO
+      let cartArray: Product[] = [];
+      
+      let storagedCart = localStorage.getItem("@RocketShoes:cart") || "[]";
+      
+      cartArray = JSON.parse(storagedCart);
+      
+      const indexElement = cartArray.findIndex(product => product.id == productId);
+
+      if (!indexElement) {
+        toast.error('Erro na remoção do produto');
+        return;
+      }
+
+      cartArray.splice(indexElement,1)
+
+      localStorage.setItem("@RocketShoes:cart", JSON.stringify(cartArray));
+    } catch(e) {
+      console.error(`${"Erro na remoção do produto"}: ${e}`);
+      toast.error('Erro na remoção do produto');
     }
   };
 

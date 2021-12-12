@@ -2,7 +2,7 @@ import { Response, Request } from "express";
 
 import { CreateCategoryUseCase } from "./CreateCategoryUseCase";
 
-// todo controller só vai ter um useCase
+// todo controller só vai ter um useCase, um handle garante isso
 
 class CreateCategoryController {
     constructor(private createCategoryUseCase: CreateCategoryUseCase) {}
