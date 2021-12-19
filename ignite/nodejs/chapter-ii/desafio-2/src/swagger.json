@@ -1,0 +1,301 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CRUD USER",
+        "description": "CRUD USER",
+        "version": "1.0.0",
+        "contact": {
+            "email": "felipy@rockseat.com.br"
+        }
+    },
+    "tags": [
+        {
+            "name": "user",
+            "description": "Everything about user"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "post": {
+                "tags": ["user"],
+                "summary": "Create a new user",
+                "description": "Create a new user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "Object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "name": "Marcelo Soares",
+                                    "email": "marcelosoares@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "User already exists.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error: User already exists"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["user"],
+                "summary": "list all users",
+                "description": "list all users. You need are admin",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucess",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    },
+                                    "example": [{
+                                        "id": "123e4567-e89b-12d3-a456-426614174000",
+                                        "name": "Felipy C",
+                                        "admin": true,
+                                        "email": "felipy@gmail.com",
+                                        "created_at": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)",
+                                        "updated_at": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)"
+                                    }]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error comum",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": [
+                                        {
+                                            "Error": "Error: User doesn't exists."
+                                        },
+                                        {
+                                            "Error": "Error: User isn't admin."
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/admin": {
+            "patch": {
+                "tags": ["user"],
+                "summary": "Turn user to admin",
+                "description": "Turn user to admin",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User identification number uuidV4",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucess",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User doesn't exists.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error: User doesn't exists"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}": {
+            "get": {
+                "tags": ["user"],
+                "summary": "Find user for id",
+                "description": "Find user for id",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "descrition": "Param on url",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucess",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "admin": {
+                                            "type": "boolean"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        },
+                                        "updated_at": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "id": "123e4567-e89b-12d3-a456-426614174000",
+                                        "name": "Felipy C",
+                                        "admin": true,
+                                        "email": "felipy@gmail.com",
+                                        "created_at": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)",
+                                        "updated_at": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Error, user doesn't found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "error": "User doesn't find"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Felipy c"
+                    },
+                    "admin": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "felipy@gmail.com"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)"
+                    }
+                },
+                "example": {
+                    "id": "123e4567-e89b-12d3-a456-426614174000",
+                    "name": "Felipy C",
+                    "admin": true,
+                    "email": "felipy@gmail.com",
+                    "created_at": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)",
+                    "updated_at": "Fri Dec 17 2021 21:33:53 GMT-0300 (Horário Padrão de Brasília)"
+                }
+            }
+        }
+    }
+}
