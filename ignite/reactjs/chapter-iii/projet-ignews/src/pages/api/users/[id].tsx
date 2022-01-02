@@ -14,3 +14,4 @@ export default (request: NextApiRequest, response: NextApiResponse) => {
 }
 
 //landing page
+//exemplo pegando route param

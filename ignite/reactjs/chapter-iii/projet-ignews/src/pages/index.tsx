@@ -39,7 +39,7 @@ export default function Home({product}: HomeProps) {
 
 // Client-side
   //não preciso de indexação
-  //acontece atraes da ação do usuário
+  //acontece atraves da ação do usuário
   //não tem necessidade de estar ali quando a pagina carrega
 // Server-side (exige mais processamento)
   //precisa de indexação tambem
