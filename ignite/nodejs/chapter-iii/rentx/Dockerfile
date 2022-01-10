@@ -3,14 +3,18 @@
 FROM node
 
 #local onde os dados da imagem vão ser salvos
-WORKDIR /usr/app
+WORKDIR /usr/src/app
 
-# vai copiar da pasta atual para o workdir
-COPY package.json ./
+COPY package*.json ./
 
 # nem todas as imagens vem com yarn instalado
 # por isso usei npm
 RUN npm install
+
+RUN apk add --no-cache make gcc g++ python && \
+  npm install && \
+  npm rebuild bcrypt --build-from-source && \
+  apk del make gcc g++ python
 
 COPY . .
 
@@ -18,7 +22,7 @@ COPY . .
 EXPOSE 3333
 
 # executa o comando para rodar o projeto
-CMD ["npm", "run", "dev"]
+CMD [ "npm", "run", "dev"]
 
-#comando para verificar ip da maquina do docker e a minha
+#o comando abaixo vai mostrar em qual ip o container está rodando
 #docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' rentx
