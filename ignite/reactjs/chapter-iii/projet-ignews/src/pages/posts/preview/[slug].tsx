@@ -85,9 +85,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
         //true
         //  gera pagina no lado browser
         //false
-        //  se não foi gerado ainda vai retorna 404
+        //  se não estiver no paths retorna 404 page
         //blocking
-        //  vai ter carregar com serversiderender
+        //  vai tentar carregar com serversiderender
         fallback: "blocking"
     }
 }
