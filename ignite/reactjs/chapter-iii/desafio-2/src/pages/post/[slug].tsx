@@ -10,9 +10,13 @@ import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
+import Comments from '../../components/Comments/index.tsx';
+
+import Link from "next/link";
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -36,8 +40,10 @@ export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
   let readTime;
 
-  // const [tempoDeLeituraCalculado, setTempoDeLeituraCalculado] = useState(0);
+  const [preventLink, setPreventLink] = useState('');
+  const [nextLink, setNextLink] = useState('');
 
+  // const [tempoDeLeituraCalculado, setTempoDeLeituraCalculado] = useState(0);
   post.first_publication_date = format(
     new Date(post.first_publication_date),
     'dd MMM yyyy',
@@ -49,27 +55,20 @@ export default function Post({ post }: PostProps): JSX.Element {
   if (router.isFallback) {
     return <div>Carregando...</div>;
   }
-
+  console.log(post)
   // gerador do tempo de leitura
   let extractKeywords: any = post?.data?.content?.reduce((acc, value, index) => {
-
     let text = '';
-
     text = text.concat(value.heading);
-
     let textBody = value.body.reduce((acc1, value1, index1) => {
       acc1 = acc1 + PrismicDOM.RichText.asText(post.data.content[0].body);
       return acc1;
     }, '');
-
     text = text.concat(textBody).trim();
-
     acc = acc.concat(text);
-
     if (index === 0) {
       text.trim();
     }
-
     return acc;
   }, '');
 
@@ -78,6 +77,43 @@ export default function Post({ post }: PostProps): JSX.Element {
   if (extractKeywords) {
     readTime = Math.ceil(extractKeywords.length / 200);
   }
+
+  function diminuiTamanhoDaString(text) {
+    // text = text.replace(/-/g, ' ').split(' ');
+    // let [n1,n2,n3] = text;
+    // text = `${n1} ${n2} ${n3}`;
+    return text;
+  }
+
+  async function fetchData() {
+    const prismic = getPrismicClient();
+    const documents = await prismic.query('');
+
+    const positionSlug = documents.results.findIndex((document)=>document.uid === post.uid);
+
+    let prevent;
+    let next;
+    console.log(prevent);
+    console.log(next);
+    if (positionSlug - 1 < 0) {
+      prevent = "";
+    }else {
+      prevent = documents.results[positionSlug - 1].uid;
+    }
+
+    if (positionSlug + 1 >= documents.results.length) {
+      next = "";
+    }else {
+      next = documents.results[positionSlug + 1].uid;
+    }
+
+    setPreventLink(prevent);
+    setNextLink(next);
+  }
+
+  useEffect(() => {
+    fetchData();
+  },[post.uid]);
 
   return (
     <div className={styles.container}>
@@ -110,6 +146,49 @@ export default function Post({ post }: PostProps): JSX.Element {
             })
           }
         </div>
+        <div className={styles.buttonsPreventNext}>
+          <div>
+            <Link href={`/post/${preventLink}`}>
+              <a>
+                <button>
+                  {
+                    preventLink && (
+                      <>
+                        <div>
+                          {diminuiTamanhoDaString(preventLink)}<br />
+                        </div>
+                        <div>
+                          Post Anterior
+                        </div>
+                      </>
+                    )
+                  }
+                </button>
+              </a>
+            </Link>
+          </div>
+          <div>
+            <Link href={`/post/${nextLink}`}>
+              <a>
+                <button>
+                  {
+                    nextLink && (
+                      <>
+                        <div>
+                          {diminuiTamanhoDaString(nextLink)}<br />
+                        </div>
+                        <div>
+                          Próximo post
+                        </div>
+                      </>
+                    )
+                  }
+                </button>
+              </a>
+            </Link>
+          </div>
+        </div>
+        <Comments />
       </div>
     </div>
   );
@@ -154,7 +233,7 @@ export const getStaticProps = async ({ params }: any): Promise<any> => {
     };
   }
 
-  // console.log(JSON.stringify(response, null, 2));
+  // console.log(JSON.stringify(posts, null, 2));
 
   const contentFormated = response.data.content.reduce((acc, value) => {
 
@@ -170,6 +249,7 @@ export const getStaticProps = async ({ params }: any): Promise<any> => {
 
   const post = {
     first_publication_date: response.first_publication_date,
+    last_publication_date: response.last_publication_date,
     uid: response.uid,
     data: {
       title: response.data.title,
