@@ -24,7 +24,7 @@ Clean Architecture (Arquitetura Limpa), Repository Pattern (padrão de design de
 
 ## Documentação da API - Endpoints
 
-#### Categories
+#### /users
 
 | Método | Endpoint       | Descrição                |
 |--------|----------------|--------------------------|
@@ -33,5 +33,56 @@ Clean Architecture (Arquitetura Limpa), Repository Pattern (padrão de design de
 | POST   | /users/{user_id}/admin | Atualizar usuário para administrador |
 | GET   | /users/{user_id} | Encontrar usuário pelo ID |
 
+## Testes
+
+#### **Rotas**
+
+[POST] /usuários
+- Deve ser capaz de criar novos usuários
+- Não deve ser capaz de criar novos usuários quando o e-mail já está em uso
+[PATCH] /usuários/:user_id/admin
+- Deve ser capaz de tornar um usuário um administrador
+- Não deve ser capaz de tornar um usuário inexistente um administrador
+[GET] /usuários/:user_id
+- Deve ser capaz de obter o perfil do usuário pelo ID
+- Não deve ser capaz de mostrar o perfil de um usuário inexistente
+[GET] /usuários
+- Deve ser capaz de listar todos os usuários
+- Um usuário não administrador não deve ser capaz de obter a lista de todos os usuários
+- Um usuário não existente não deve ser capaz de obter a lista de todos os usuários
+- Um usuário não existente não deve ser capaz de obter a lista de todos os usuários
+
+#### **Modelo de Usuário**
+
+- Deve ser capaz de criar um usuário com todas as propriedades
+
+#### **Repositório de Usuários**
+
+- Deve ser capaz de criar novos usuários
+- Deve ser capaz de listar todos os usuários
+- Deve ser capaz de encontrar um usuário por ID
+- Deve ser capaz de encontrar um usuário pelo endereço de e-mail
+- Deve ser capaz de tornar um usuário um administrador
+
+#### **UseCase de Criar Usuário**
+
+- Deve ser capaz de criar novos usuários
+- Não deve ser capaz de criar novos usuários quando o e-mail já está em uso
+
+#### **UseCase de Listar Todos os Usuários**
+
+- Deve ser capaz de listar todos os usuários
+- Um usuário não administrador não deve ser capaz de obter a lista de todos os usuários
+- Um usuário não existente não deve ser capaz de obter a lista de todos os usuários
+
+#### **UseCase de Exibir Perfil do Usuário**
+
+- Deve ser capaz de obter o perfil do usuário pelo ID
+- Não deve ser capaz de mostrar o perfil de um usuário inexistente
+
+#### **UseCase de Tornar Usuário Administrador**
+
+- Deve ser capaz de tornar um usuário um administrador
+- Não deve ser capaz de tornar um usuário inexistente um administrador
 
 ## Links
