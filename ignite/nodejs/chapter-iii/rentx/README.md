@@ -1,6 +1,6 @@
 # BACK-END - CAR RENT - TYPESCRIPT, EXPRESS, TYPEORM, SWAGGER, DECORATOR, TSYRINGE, SINGLETON, DOCKER
 
-![diagrama do projeto](https://github.com/iamfelipy/rocketseat-2021-reactjs-nodejs/blob/main/ignite/nodejs/chapter-iii/rentx/diagrama-projeto.png?raw=true)
+![diagrama do projeto](./diagrama-projeto.png)
 
 O Car Rent é uma API robusta para gerenciamento de aluguéis de carros, construída com Clean Architecture, seguindo os princípios SOLID e utilizando o padrão Repository para separação de responsabilidades. A documentação da API é fornecida pelo Swagger, facilitando sua utilização e entendimento. Além disso, a aplicação faz uso do padrão Singleton para garantir a instanciação única de certos objetos. As tecnologias empregadas incluem Node.js, Express.js, JSON Web Token (JWT) para autenticação, Multer para upload de arquivos, PostgreSQL (PG) para o banco de dados, TypeORM para mapeamento objeto-relacional, e ferramentas de qualidade de código como Eslint e Prettier. O projeto é empacotado e distribuído com Docker, garantindo portabilidade e fácil deploy.
 
@@ -43,7 +43,7 @@ Clean Architecture (Arquitetura Limpa), SOLID, Repository Pattern (padrão de de
 
 ## Documentação da API - Endpoints
 
-### Categories
+#### Categories
 
 | Método | Endpoint       | Descrição                |
 |--------|----------------|--------------------------|
@@ -51,60 +51,17 @@ Clean Architecture (Arquitetura Limpa), SOLID, Repository Pattern (padrão de de
 | GET    | /categories    | Listar todas as categorias|
 | POST   | /categories/import | Fazer upload de uma nova categoria |
 
-#### Cria uma nova categoria.
-```
-POST /categories
-```
-
-
-**Corpo da Requisição:**
-
-```
-{
-  "name": "Nome da categoria",
-  "description": "Descrição da categoria"
-}
-```
-
-**Respostas:**
-
-- 201 Created: Categoria criada com sucesso.
-- 500 Error: A categoria já existe.
-
-#### Lista todas as categorias disponíveis.
-
-```
-GET /categories
-```
-
-
-**Respostas:**
-
-200 Success: Lista de categorias retornada com sucesso.
-
-### Specifications
+#### Specifications
 
 | Método | Endpoint       | Descrição                |
 |--------|----------------|--------------------------|
 | POST   | /specifications    | Criar uma especificação      |
 
-#### Cria uma nova especificação.
-```
-POST /specifications
-```
+#### Authenticate
 
-**Corpo da Requisição:**
+| Método | Endpoint       | Descrição                |
+|--------|----------------|--------------------------|
+| POST   | /sessions    | Criar uma sessão      |
 
-```
-{
-  "name": "Nome da especificação",
-  "description": "Descrição da especificação"
-}
-```
-
-**Respostas:**
-
-- 201 Created: Especificação criada com sucesso.
-- 500 Error: A especificação já existe.
 
 ## Links
