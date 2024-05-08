@@ -19,7 +19,7 @@ TO.DO é um projeto de front-end desenvolvido com foco na organização e gestã
 - Apagar Tarefa: Os usuários têm a opção de apagar uma tarefa existente da lista.
 - Marcar Tarefa como Concluída: Os usuários podem marcar uma tarefa como concluída, indicando que ela foi realizada com sucesso.
 
-# Testes
+## Testes
 
 - Deve ser capaz de adicionar uma tarefa.
 - Não deve ser capaz de adicionar uma tarefa com título vazio.
